@@ -1,4 +1,5 @@
 import Combine
+import SwiftUI
 import XCTest
 
 @testable import PruebaMeli
@@ -110,6 +111,27 @@ final class PruebaMeliTests: XCTestCase {
                 (product.title, product.averageRating, product.reviewCount)
             }
         }
+    }
+
+    func testErrorViewsRenderBody() {
+        let banner = ProductErrorBannerView(message: "Error temporal", onRetry: {})
+        let state = ProductErrorStateView(message: "Sin red", onRetry: {})
+
+        _ = banner.body
+        _ = state.body
+    }
+
+    func testSummaryButtonVisibilityRuleIsGreaterThanFiveReviews() {
+        let repository = RepositorySpy(result: .success([]), cachedProducts: [])
+        let sut = ProductViewModel(
+            getProductsUseCase: GetProductsUseCase(repository: repository),
+            loadCachedProductsUseCase: LoadCachedProductsUseCase(repository: repository)
+        )
+        let hidden = Product(id: 1, title: "A", image: "", reviews: (0..<5).map { _ in Review(author: "u", rating: 5, text: "ok") })
+        let visible = Product(id: 2, title: "B", image: "", reviews: (0..<6).map { _ in Review(author: "u", rating: 5, text: "ok") })
+
+        XCTAssertFalse(sut.canGenerateSummary(for: hidden))
+        XCTAssertTrue(sut.canGenerateSummary(for: visible))
     }
 }
 

@@ -10,6 +10,7 @@ struct Product: Codable, Equatable {
     let title: String
     let image: String
     let reviews: [Review]
+    var summary: ReviewSummary? = nil
 
     var reviewCount: Int {
         reviews.count

@@ -7,6 +7,15 @@ import SwiftUI
 
 struct ProductCardView: View {
     let product: Product
+    let summary: ReviewSummary?
+    let isSummaryLoading: Bool
+    let summaryError: String?
+    let canGenerateSummary: Bool
+    let summaryButtonTitle: String
+    let onGenerateSummary: () -> Void
+
+    @State private var showSummaryModal = false
+    @State private var showAllReviewsModal = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
@@ -50,7 +59,36 @@ struct ProductCardView: View {
                         .font(.system(size: 11))
                         .foregroundStyle(Color.secondary)
                 }
-                .padding(.bottom, 20)
+
+                if canGenerateSummary {
+                    if isSummaryLoading {
+                        ProgressView()
+                            .padding(.vertical, 4)
+                    } else {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Button(summaryButtonTitle, action: onGenerateSummary)
+                                .font(.caption.weight(.semibold))
+                                .buttonStyle(.borderedProminent)
+                                .controlSize(.small)
+
+                            if summary != nil {
+                                Button("Ver resumen") {
+                                    showSummaryModal = true
+                                }
+                                .font(.caption.weight(.medium))
+                                .foregroundStyle(.blue)
+                            }
+                        }
+                        .padding(.top, 4)
+                    }
+                }
+
+                if let summaryError {
+                    Text(summaryError)
+                        .font(.caption2)
+                        .foregroundStyle(.red)
+                        .padding(.top, 4)
+                }
             }
             .padding(8)
         }
@@ -62,6 +100,34 @@ struct ProductCardView: View {
                 .stroke(Color.black.opacity(0.06), lineWidth: 0.8)
         )
         .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 1)
+        .onChange(of: isSummaryLoading) { _, loading in
+            if !loading, summary != nil {
+                showSummaryModal = true
+            }
+        }
+        .sheet(isPresented: $showSummaryModal) {
+            if let summary {
+                ReviewSummaryModalView(
+                    summary: summary,
+                    onDismiss: { showSummaryModal = false },
+                    onViewAllReviews: openAllReviews
+                )
+                .presentationDetents([.fraction(0.58), .large])
+                .presentationDragIndicator(.visible)
+            }
+        }
+        .sheet(isPresented: $showAllReviewsModal) {
+            ReviewListView(reviews: product.reviews)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+        }
+    }
+
+    private func openAllReviews() {
+        showSummaryModal = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            showAllReviewsModal = true
+        }
     }
 
     private var reviewCountLabel: String {

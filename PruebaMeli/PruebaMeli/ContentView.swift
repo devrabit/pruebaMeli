@@ -20,8 +20,15 @@ struct ContentView: View {
                 } else if !viewModel.products.isEmpty {
                     ProductsGridView(
                         products: viewModel.products,
+                        summaries: viewModel.summaries,
+                        loadingSummaryIds: viewModel.loadingSummaryIds,
+                        summaryErrors: viewModel.summaryErrors,
                         isLoading: viewModel.isLoading,
                         errorMessage: viewModel.error,
+                        canGenerateSummary: viewModel.canGenerateSummary,
+                        summaryButtonTitle: viewModel.summaryButtonTitle,
+                        onGenerateSummary: viewModel.generateSummary,
+                        onRegenerateSummary: viewModel.regenerateSummary,
                         onRetry: viewModel.load
                     )
                 } else if let message = viewModel.error {
