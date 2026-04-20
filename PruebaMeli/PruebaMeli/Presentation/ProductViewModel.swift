@@ -42,6 +42,7 @@ final class ProductViewModel: ObservableObject {
         isLoading = true
 
         getProductsUseCase.execute()
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 guard let self else { return }
                 self.isLoading = false
@@ -68,7 +69,7 @@ final class ProductViewModel: ObservableObject {
         loadingSummaryIds.insert(product.id)
         summaryErrors[product.id] = nil
 
-        Task {
+        Task { @MainActor in
             do {
                 let summary = try await generateSummaryUseCase.execute(product: product)
                 summaries[product.id] = summary
@@ -84,7 +85,7 @@ final class ProductViewModel: ObservableObject {
         loadingSummaryIds.insert(product.id)
         summaryErrors[product.id] = nil
 
-        Task {
+        Task { @MainActor in
             do {
                 let summary = try await regenerateSummaryUseCase.execute(product: product)
                 summaries[product.id] = summary

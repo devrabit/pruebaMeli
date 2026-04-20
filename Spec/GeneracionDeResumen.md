@@ -79,7 +79,7 @@ struct Product {
 
 ### 🔷 Puertos
 
-```swift id="h0wrvt"
+```swift 
 protocol ReviewSummaryGenerator {
     func generateSummary(from reviews: [Review]) async throws -> ReviewSummary
 }
@@ -226,7 +226,7 @@ final class OnDeviceSummaryGenerator: ReviewSummaryGenerator {
 * Persistir resumen por `productId`
 * Usar:
 
-  * Realm (recomendado)
+  * CachesDirectory
   * o base local equivalente
 
 ### Reglas

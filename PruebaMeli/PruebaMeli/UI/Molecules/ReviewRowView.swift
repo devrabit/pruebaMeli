@@ -26,7 +26,10 @@ struct ReviewRowView: View {
                 .foregroundStyle(.primary)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(.vertical, 8)
+        .padding(8)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(red: 0.96, green: 0.96, blue: 0.96))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 1)
     }
 }
