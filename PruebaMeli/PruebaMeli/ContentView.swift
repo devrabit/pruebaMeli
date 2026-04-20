@@ -13,30 +13,7 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack {
-            Group {
-                if viewModel.isLoading && viewModel.products.isEmpty {
-                    ProgressView("Cargando…")
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if !viewModel.products.isEmpty {
-                    ProductsGridView(
-                        products: viewModel.products,
-                        summaries: viewModel.summaries,
-                        loadingSummaryIds: viewModel.loadingSummaryIds,
-                        summaryErrors: viewModel.summaryErrors,
-                        isLoading: viewModel.isLoading,
-                        errorMessage: viewModel.error,
-                        canGenerateSummary: viewModel.canGenerateSummary,
-                        summaryButtonTitle: viewModel.summaryButtonTitle,
-                        onGenerateSummary: viewModel.generateSummary,
-                        onRegenerateSummary: viewModel.regenerateSummary,
-                        onRetry: viewModel.load
-                    )
-                } else if let message = viewModel.error {
-                    ProductErrorStateView(message: message, onRetry: viewModel.load)
-                } else {
-                    ProductEmptyStateView()
-                }
-            }
+            ProductPageView(viewModel: viewModel)
             .navigationTitle("Productos")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {

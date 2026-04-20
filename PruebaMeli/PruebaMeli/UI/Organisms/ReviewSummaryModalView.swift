@@ -26,7 +26,7 @@ struct ReviewSummaryModalView: View {
                 .padding(.bottom, 16)
             }
 
-            primaryButton
+            PrimaryActionButton(title: "VER TODAS LAS RESEÑAS", action: onViewAllReviews)
                 .padding(.horizontal, 20)
                 .padding(.bottom, 20)
         }
@@ -94,20 +94,6 @@ struct ReviewSummaryModalView: View {
         }
     }
 
-    private var primaryButton: some View {
-        Button(action: onViewAllReviews) {
-            Text("VER TODAS LAS RESEÑAS")
-                .font(.system(size: 13, weight: .bold))
-                .tracking(0.5)
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .background(Color(red: 0.12, green: 0.18, blue: 0.32))
-                .clipShape(Capsule())
-        }
-        .buttonStyle(.plain)
-    }
-
     private func sectionTitle(_ text: String) -> some View {
         Text(text)
             .font(.system(size: 11, weight: .bold))
@@ -142,8 +128,6 @@ struct ReviewSummaryModalView: View {
         }
     }
 }
-
-// MARK: - Pie chart (proporciones según sentimiento)
 
 private struct SentimentPieChart: View {
     let sentiment: Sentiment

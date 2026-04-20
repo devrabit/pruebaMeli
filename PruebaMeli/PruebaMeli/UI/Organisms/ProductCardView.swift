@@ -19,46 +19,15 @@ struct ProductCardView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
-            AsyncImage(url: URL(string: product.image)) { phase in
-                switch phase {
-                case .empty:
-                    ProgressView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.secondary.opacity(0.12))
-                case .success(let image):
-                    image
-                        .resizable()
-                        .scaledToFill()
-                case .failure:
-                    Image(systemName: "photo")
-                        .font(.title2)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.secondary.opacity(0.12))
-                @unknown default:
-                    EmptyView()
-                }
-            }
-            .frame(height: 132)
-            .clipShape(RoundedRectangle(cornerRadius: 9))
-            VStack(alignment: .leading) {
-                Text(product.title)
-                    .font(.system(size: 29 * 0.5, weight: .bold))
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.9)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            RemoteProductImageView(imageURL: product.image)
 
-                Text(mockPriceText)
-                    .font(.system(size: 36 * 0.5, weight: .bold))
-                    .foregroundStyle(.primary)
-
-                HStack(alignment: .center, spacing: 4) {
-                    StarRatingView(rating: product.averageRating, maxRating: 5)
-
-                    Text(reviewCountLabel)
-                        .font(.system(size: 11))
-                        .foregroundStyle(Color.secondary)
-                }
+            VStack(alignment: .leading, spacing: 0) {
+                ProductInfoView(
+                    title: product.title,
+                    priceText: mockPriceText,
+                    averageRating: product.averageRating,
+                    reviewCount: product.reviewCount
+                )
 
                 if canGenerateSummary {
                     if isSummaryLoading {
@@ -75,11 +44,12 @@ struct ProductCardView: View {
                                 Button("Ver resumen") {
                                     showSummaryModal = true
                                 }
+                                .padding(.top, 4)
                                 .font(.caption.weight(.medium))
                                 .foregroundStyle(.blue)
                             }
                         }
-                        .padding(.top, 4)
+                        .padding(.top, 8)
                     }
                 }
 
@@ -92,6 +62,7 @@ struct ProductCardView: View {
             }
             .padding(8)
         }
+        .padding(.bottom, 10)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(red: 0.96, green: 0.96, blue: 0.96))
         .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -130,12 +101,7 @@ struct ProductCardView: View {
         }
     }
 
-    private var reviewCountLabel: String {
-        "(\(product.reviewCount) reseñas)"
-    }
-
     private var mockPriceText: String {
-        // Temporary visual placeholder while price is not part of domain model.
         let basePrice = 19.99 + (Double(product.id % 9) * 5)
         return String(format: "$%.2f", basePrice)
     }
