@@ -11,9 +11,14 @@ import SwiftUI
 struct PruebaMeliApp: App {
     private let productViewModel: ProductViewModel = {
         let network = URLSessionNetworkClient()
-        let repository = ProductAPIRepository(network: network)
-        let useCase = GetProductsUseCase(repository: repository)
-        return ProductViewModel(useCase: useCase)
+        let localStore = FileProductLocalStore()
+        let repository = ProductAPIRepository(network: network, localStore: localStore)
+        let getProductsUseCase = GetProductsUseCase(repository: repository)
+        let loadCachedProductsUseCase = LoadCachedProductsUseCase(repository: repository)
+        return ProductViewModel(
+            getProductsUseCase: getProductsUseCase,
+            loadCachedProductsUseCase: loadCachedProductsUseCase
+        )
     }()
 
     var body: some Scene {

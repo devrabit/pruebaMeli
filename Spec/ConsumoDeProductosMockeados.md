@@ -273,13 +273,13 @@ GET /products
 
 ## 🚀 Criterios de Aceptación
 
-* [ ] Se consumen correctamente 100+ productos
-* [ ] La base URL es configurable
-* [ ] Se usa `URLSession`
-* [ ] Se implementa arquitectura hexagonal
-* [ ] No hay datos sensibles hardcodeados
-* [ ] Funciona correctamente con Proxyman (localhost)
-* [ ] Manejo de errores y estados vacíos
+* [x] Se consumen correctamente 100+ productos
+* [x] La base URL es configurable
+* [x] Se usa `URLSession`
+* [x] Se implementa arquitectura hexagonal
+* [x] No hay datos sensibles hardcodeados
+* [x] Funciona correctamente con Proxyman (localhost)
+* [x] Manejo de errores y estados vacíos
 
 ---
 

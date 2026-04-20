@@ -62,6 +62,7 @@ final class GetProductsUseCaseTests: XCTestCase {
 
 private final class MockProductRepository: ProductRepository {
     let result: Result<[Product], Error>
+    var cachedProducts: [Product] = []
 
     init(result: Result<[Product], Error>) {
         self.result = result
@@ -74,5 +75,13 @@ private final class MockProductRepository: ProductRepository {
         case .failure(let error):
             return Fail(error: error).eraseToAnyPublisher()
         }
+    }
+
+    func saveProducts(_ products: [Product]) {
+        cachedProducts = products
+    }
+
+    func loadLocalProducts() -> [Product] {
+        cachedProducts
     }
 }
