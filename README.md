@@ -22,6 +22,11 @@ App iOS en SwiftUI para visualizar productos, reseñas y generar un resumen on-d
 
 - Video de demostración: [`Video/demo.mp4`](Video/demo.mp4)
 
+<video src="Video/demo.mp4" controls width="720">
+  Tu visor de Markdown no soporta video embebido.
+  Puedes abrir la demo aquí: <a href="Video/demo.mp4">Video/demo.mp4</a>.
+</video>
+
 ## Estructura del proyecto
 
 - `PruebaMeli/PruebaMeli/Domain`: entidades y puertos.
