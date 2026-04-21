@@ -23,7 +23,13 @@ App iOS en SwiftUI para visualizar productos, reseñas y generar un resumen on-d
 - Video de demostración: [`Video/demo.mp4`](Video/demo.mp4)
 
 https://github.com/user-attachments/assets/3034b7a8-1b14-4b5c-ba93-05f57ccbda0e
+
+
+
 https://github.com/user-attachments/assets/f3c9df4a-3b5d-4e81-af1c-5c2ba45c3569
+
+
+
 https://github.com/user-attachments/assets/5d4576cb-aea2-4f7c-acb0-01eb61cb697d
 
 ## Estructura del proyecto
