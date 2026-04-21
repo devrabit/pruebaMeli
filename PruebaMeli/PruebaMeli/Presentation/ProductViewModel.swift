@@ -16,6 +16,7 @@ final class ProductViewModel: ObservableObject {
 
     private let getProductsUseCase: GetProductsUseCase
     private let loadCachedProductsUseCase: LoadCachedProductsUseCase
+    private let summaryRepository: SummaryRepository?
     private let generateSummaryUseCase: GenerateReviewSummaryUseCase?
     private let regenerateSummaryUseCase: RegenerateReviewSummaryUseCase?
     private var cancellables = Set<AnyCancellable>()
@@ -23,16 +24,20 @@ final class ProductViewModel: ObservableObject {
     init(
         getProductsUseCase: GetProductsUseCase,
         loadCachedProductsUseCase: LoadCachedProductsUseCase,
+        summaryRepository: SummaryRepository? = nil,
         generateSummaryUseCase: GenerateReviewSummaryUseCase? = nil,
         regenerateSummaryUseCase: RegenerateReviewSummaryUseCase? = nil
     ) {
         self.getProductsUseCase = getProductsUseCase
         self.loadCachedProductsUseCase = loadCachedProductsUseCase
+        self.summaryRepository = summaryRepository
         self.generateSummaryUseCase = generateSummaryUseCase
         self.regenerateSummaryUseCase = regenerateSummaryUseCase
     }
 
     func load() {
+        hydrateSummariesFromPersistence()
+
         let localProducts = loadCachedProductsUseCase.execute()
         if !localProducts.isEmpty {
             products = localProducts
@@ -54,6 +59,11 @@ final class ProductViewModel: ObservableObject {
                 self?.products = products
             }
             .store(in: &cancellables)
+    }
+
+    private func hydrateSummariesFromPersistence() {
+        guard let summaryRepository else { return }
+        summaries = summaryRepository.loadAllSummaries()
     }
 
     func canGenerateSummary(for product: Product) -> Bool {

@@ -18,6 +18,10 @@ App iOS en SwiftUI para visualizar productos, reseñas y generar un resumen on-d
   - Fallback heurístico local cuando no hay disponibilidad.
 - Modal de resumen y sheet con listado completo de reseñas.
 
+## Demo en video
+
+- Video de demostración: [`Video/demo.mp4`](Video/demo.mp4)
+
 ## Estructura del proyecto
 
 - `PruebaMeli/PruebaMeli/Domain`: entidades y puertos.
@@ -97,7 +101,7 @@ xcodebuild test \
 ## Persistencia local
 
 - Productos: `products-cache.json` en `cachesDirectory` (`FileProductLocalStore`).
-- Resumenes: `review-summaries.json` en `cachesDirectory` (`FileSummaryRepository`).
+- Resumenes: `review-summaries.json` en `cachesDirectory` (`FileSummaryRepository`). Al abrir la app, `ProductViewModel` vuelve a cargar todos los resúmenes guardados en memoria para mostrar el estado correcto en la grilla.
 
 ## Specs implementadas
 

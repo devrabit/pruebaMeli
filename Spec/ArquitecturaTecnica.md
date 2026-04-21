@@ -144,6 +144,7 @@ Se almacena en caché en archivos .json, esta decisión se toma para mantener el
   - `GenerateReviewSummaryUseCase` devuelve cache si existe;
   - si no existe, genera y guarda;
   - `RegenerateReviewSummaryUseCase` sobrescribe el valor.
+  - `ProductViewModel.load()` llama a `loadAllSummaries()` al inicio para inflar  `summaries` cuando el usuario vuelva a abrir el app.
 
 
 ## 6) Estrategia de testing

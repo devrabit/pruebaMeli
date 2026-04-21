@@ -28,6 +28,7 @@ struct PruebaMeliApp: App {
         return ProductViewModel(
             getProductsUseCase: getProductsUseCase,
             loadCachedProductsUseCase: loadCachedProductsUseCase,
+            summaryRepository: summaryRepository,
             generateSummaryUseCase: generateSummaryUseCase,
             regenerateSummaryUseCase: regenerateSummaryUseCase
         )

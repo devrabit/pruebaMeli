@@ -28,6 +28,15 @@ final class FileSummaryRepository: SummaryRepository {
         return store[String(productId)]
     }
 
+    func loadAllSummaries() -> [Int: ReviewSummary] {
+        var result: [Int: ReviewSummary] = [:]
+        for (key, summary) in loadStore() {
+            guard let id = Int(key) else { continue }
+            result[id] = summary
+        }
+        return result
+    }
+
     private func loadStore() -> [String: ReviewSummary] {
         guard let data = try? Data(contentsOf: fileURL) else {
             return [:]

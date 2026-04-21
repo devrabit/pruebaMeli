@@ -71,6 +71,40 @@ final class ReviewSummaryFeatureTests: XCTestCase {
         }
     }
 
+    func testViewModelHydratesSummariesFromDiskOnLoad() {
+        let path = FileManager.default.temporaryDirectory
+            .appendingPathComponent("summary-hydrate-\(UUID().uuidString).json")
+        let summaryRepository = FileSummaryRepositoryForTests(fileURL: path)
+        let expected = ReviewSummary(
+            sentiment: .positive,
+            strengths: ["calidad"],
+            weaknesses: ["precio"],
+            summary: "Persistido"
+        )
+        summaryRepository.saveSummary(expected, for: 42)
+
+        let products = [makeProduct(id: 42, reviewCount: 8)]
+        let productRepository = ProductRepositoryFetchStub(remoteProducts: products, cachedProducts: [])
+
+        let viewModel = ProductViewModel(
+            getProductsUseCase: GetProductsUseCase(repository: productRepository),
+            loadCachedProductsUseCase: LoadCachedProductsUseCase(repository: productRepository),
+            summaryRepository: summaryRepository,
+            generateSummaryUseCase: GenerateReviewSummaryUseCase(
+                generator: SummaryGeneratorMock(),
+                repository: summaryRepository
+            ),
+            regenerateSummaryUseCase: RegenerateReviewSummaryUseCase(
+                generator: SummaryGeneratorMock(),
+                repository: summaryRepository
+            )
+        )
+
+        viewModel.load()
+
+        XCTAssertEqual(viewModel.summaries[42], expected)
+    }
+
     func testSummaryRepositorySavesAndLoadsByProductId() {
         let path = FileManager.default.temporaryDirectory
             .appendingPathComponent("summary-repo-\(UUID().uuidString).json")
@@ -190,6 +224,10 @@ private final class SummaryRepositoryMock: SummaryRepository {
     func loadSummary(for productId: Int) -> ReviewSummary? {
         storage[productId]
     }
+
+    func loadAllSummaries() -> [Int: ReviewSummary] {
+        storage
+    }
 }
 
 private final class ProductRepositoryMock: ProductRepository {
@@ -200,6 +238,28 @@ private final class ProductRepositoryMock: ProductRepository {
     func saveProducts(_ products: [Product]) {}
 
     func loadLocalProducts() -> [Product] { [] }
+}
+
+private final class ProductRepositoryFetchStub: ProductRepository {
+    private let remoteProducts: [Product]
+    private var cachedProducts: [Product]
+
+    init(remoteProducts: [Product], cachedProducts: [Product] = []) {
+        self.remoteProducts = remoteProducts
+        self.cachedProducts = cachedProducts
+    }
+
+    func fetchProducts() -> AnyPublisher<[Product], Error> {
+        Just(remoteProducts).setFailureType(to: Error.self).eraseToAnyPublisher()
+    }
+
+    func saveProducts(_ products: [Product]) {
+        cachedProducts = products
+    }
+
+    func loadLocalProducts() -> [Product] {
+        cachedProducts
+    }
 }
 
 private final class FileSummaryRepositoryForTests: SummaryRepository {
@@ -220,6 +280,15 @@ private final class FileSummaryRepositoryForTests: SummaryRepository {
 
     func loadSummary(for productId: Int) -> ReviewSummary? {
         loadStore()[String(productId)]
+    }
+
+    func loadAllSummaries() -> [Int: ReviewSummary] {
+        var result: [Int: ReviewSummary] = [:]
+        for (key, summary) in loadStore() {
+            guard let id = Int(key) else { continue }
+            result[id] = summary
+        }
+        return result
     }
 
     private func loadStore() -> [String: ReviewSummary] {

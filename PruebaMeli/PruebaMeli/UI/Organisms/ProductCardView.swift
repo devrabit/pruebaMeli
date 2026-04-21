@@ -83,7 +83,7 @@ struct ProductCardView: View {
                     onDismiss: { showSummaryModal = false },
                     onViewAllReviews: openAllReviews
                 )
-                .presentationDetents([.fraction(0.58), .large])
+                .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
             }
         }
